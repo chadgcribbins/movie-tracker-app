@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ===== Theater Curtain ===== */
+
+.curtain-panel {
+  position: fixed;
+  top: 0;
+  width: 50%;
+  height: 100vh;
+  z-index: 50;
+  transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1);
+  overflow: hidden;
+}
+
+.curtain-left {
+  left: 0;
+  transform: translateX(0);
+}
+
+.curtain-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.curtain-open-left {
+  transform: translateX(-105%);
+}
+
+.curtain-open-right {
+  transform: translateX(105%);
+}
+
+/* Red velvet fabric texture */
+.curtain-fabric {
+  position: absolute;
+  inset: 0;
+  background:
+    /* Vertical fold highlights */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      rgba(255, 255, 255, 0.03) 2px,
+      transparent 4px,
+      rgba(0, 0, 0, 0.15) 20px,
+      transparent 22px,
+      rgba(255, 255, 255, 0.05) 40px,
+      transparent 42px,
+      rgba(0, 0, 0, 0.12) 60px,
+      transparent 62px
+    ),
+    /* Base velvet gradient */
+    linear-gradient(
+      180deg,
+      #8b1a1a 0%,
+      #a52020 15%,
+      #7a1515 30%,
+      #922222 50%,
+      #6d1010 70%,
+      #801818 85%,
+      #5c0c0c 100%
+    );
+  /* Subtle fabric sheen */
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.3);
+}
+
+/* Gold fringe at bottom */
+.curtain-fringe {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #d4a017 0px,
+      #f0c040 3px,
+      #d4a017 6px,
+      #b8860b 9px,
+      #d4a017 12px
+    );
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Shimmer effect before curtain opens */
+.curtain-shimmer {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.08) 45%,
+    transparent 50%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 200%; }
+  100% { background-position: -200% -200%; }
+}
+
+/* ===== Watched toggle animation ===== */
+
+@keyframes watched-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+.animate-watched-pop {
+  animation: watched-pop 0.3s ease-out;
+}
+
+/* ===== Card styles ===== */
+
+.card-unwatched {
+  filter: saturate(0.7);
+}
+
+.card-unwatched:hover {
+  filter: saturate(1);
+}
+
+/* ===== Poster fade-in ===== */
+img[loading="lazy"] {
+  transition: opacity 0.5s ease-in;
+}
