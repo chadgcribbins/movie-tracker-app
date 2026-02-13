@@ -109,30 +109,22 @@ export default function DirectorChair({ existingTmdbIds, onMovieSubmitted }) {
 
   return (
     <>
-      {/* Director's Chair peek - clip wrapper keeps tap target in viewport */}
-      <div
-        className={`director-chair-wrapper fixed right-4 sm:right-[16.66%] z-40 overflow-hidden transition-opacity duration-500 ${
-          isOpen ? 'opacity-0 pointer-events-none' : ''
+      {/* Director's Chair — simple fixed button, no clipping tricks */}
+      <button
+        onClick={toggle}
+        title="Submit a movie"
+        className={`fixed bottom-2 right-4 sm:right-[16.66%] z-40 transition-all duration-500 active:scale-95 ${
+          isOpen ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100'
         }`}
+        style={{ transform: isOpen ? 'translateY(16px) rotate(-3deg)' : 'rotate(-3deg)' }}
       >
-        <button
-          onClick={toggle}
-          className="group relative flex flex-col items-center"
-          title="Submit a movie"
-          style={{ marginTop: '-44px' }}
-        >
-          {/* Chair back — tall, bottom clipped by wrapper overflow:hidden */}
-          <div className="relative w-28 sm:w-36 h-20 bg-gradient-to-b from-gray-800 via-gray-900 to-gray-900 rounded-t-lg border-2 border-b-0 border-gray-600 shadow-lg overflow-hidden active:-translate-y-2 group-hover:-translate-y-3 transition-transform duration-200">
-            {/* Canvas text on chair back */}
-            <div className="absolute inset-x-0 top-2 h-10 mx-2 sm:mx-2.5 bg-emerald-800 rounded-t-sm flex items-center justify-center">
-              <span className="text-[10px] sm:text-[11px] font-bold text-amber-300 tracking-widest uppercase">Director</span>
-            </div>
-            {/* Chair posts */}
-            <div className="absolute bottom-2 left-2 w-2 h-3 bg-gray-700 rounded-b-sm" />
-            <div className="absolute bottom-2 right-2 w-2 h-3 bg-gray-700 rounded-b-sm" />
+        <div className="relative w-28 sm:w-36 h-11 sm:h-12 bg-gradient-to-b from-gray-800 to-gray-900 rounded-t-lg rounded-b-sm border-2 border-gray-600 shadow-lg overflow-hidden">
+          {/* Canvas text on chair back */}
+          <div className="absolute inset-x-0 top-1.5 bottom-1.5 mx-2 sm:mx-2.5 bg-emerald-800 rounded-sm flex items-center justify-center">
+            <span className="text-[10px] sm:text-[11px] font-bold text-amber-300 tracking-widest uppercase">Director</span>
           </div>
-        </button>
-      </div>
+        </div>
+      </button>
 
       {/* Slide-up panel */}
       <div

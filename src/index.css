@@ -338,15 +338,6 @@ body {
   filter: saturate(1);
 }
 
-/* ===== Director's Chair ===== */
-
-.director-chair-wrapper {
-  bottom: env(safe-area-inset-bottom, 0px);
-  height: 36px;
-  transform: rotate(-3deg);
-  transform-origin: bottom center;
-}
-
 /* ===== Poster fade-in ===== */
 img[loading="lazy"] {
   transition: opacity 0.5s ease-in;
