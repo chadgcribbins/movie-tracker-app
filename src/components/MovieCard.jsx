@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { CheckCircle, Circle, Clock, Star } from 'lucide-react';
+import { CheckCircle, Circle, Clock, Star, PlusCircle, MinusCircle } from 'lucide-react';
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 
-export default function MovieCard({ movie, isWatched, onToggle, faded = false }) {
+export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdopt, faded = false }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [justToggled, setJustToggled] = useState(false);
@@ -14,17 +14,24 @@ export default function MovieCard({ movie, isWatched, onToggle, faded = false })
     setTimeout(() => setJustToggled(false), 400);
   }, [movie.tmdbId, onToggle]);
 
-  // A faded movie that's been watched "comes alive"
+  const handleAdopt = useCallback(() => {
+    setJustToggled(true);
+    onAdopt(movie.tmdbId);
+    setTimeout(() => setJustToggled(false), 400);
+  }, [movie.tmdbId, onAdopt]);
+
   const watched = isWatched;
-  const dimmed = faded && !watched;
+  const adopted = isAdopted;
+  // Ghosted = faded franchise movie that hasn't been adopted
+  const ghosted = faded && !adopted;
 
   return (
     <div
       className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300
-        ${dimmed ? 'opacity-40 scale-[0.97] hover:opacity-70 hover:scale-100' : 'hover:shadow-xl hover:-translate-y-1'}
+        ${ghosted ? 'opacity-40 scale-[0.97] hover:opacity-70 hover:scale-100' : 'hover:shadow-xl hover:-translate-y-1'}
         ${watched ? 'ring-2 ring-green-400' : ''}
-        ${!watched && !dimmed ? 'card-unwatched' : ''}
-        ${faded && watched ? 'ring-2 ring-green-400 ring-dashed' : ''}
+        ${!watched && !ghosted ? 'card-unwatched' : ''}
+        ${faded && adopted ? 'ring-2 ring-blue-400 ring-dashed' : ''}
         cursor-pointer
       `}
     >
@@ -55,6 +62,13 @@ export default function MovieCard({ movie, isWatched, onToggle, faded = false })
           </div>
         )}
 
+        {/* Adopted badge for faded movies that were adopted */}
+        {faded && adopted && !watched && (
+          <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1.5 shadow-lg">
+            <PlusCircle size={20} />
+          </div>
+        )}
+
         {/* Watched badge */}
         {watched && (
           <div className={`absolute top-2 right-2 bg-green-500 text-white rounded-full p-1.5 shadow-lg ${
@@ -65,7 +79,7 @@ export default function MovieCard({ movie, isWatched, onToggle, faded = false })
         )}
 
         {/* Certification badge */}
-        {!dimmed && movie.certification && (
+        {!ghosted && movie.certification && (
           <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs font-bold px-1.5 py-0.5 rounded">
             {movie.certification}
           </div>
@@ -100,7 +114,7 @@ export default function MovieCard({ movie, isWatched, onToggle, faded = false })
         </div>
 
         {/* Genre pills */}
-        {!dimmed && movie.genres && movie.genres.length > 0 && (
+        {!ghosted && movie.genres && movie.genres.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-2">
             {movie.genres.slice(0, 3).map(g => (
               <span key={g} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">
@@ -110,34 +124,77 @@ export default function MovieCard({ movie, isWatched, onToggle, faded = false })
           </div>
         )}
 
-        {/* Watch button */}
-        <button
-          onClick={handleToggle}
-          className={`w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
-            watched
-              ? 'bg-green-500 hover:bg-green-600 text-white'
-              : dimmed
-                ? 'bg-gray-50 hover:bg-gray-100 text-gray-400 border border-dashed border-gray-300'
+        {/* Buttons for faded (non-curated franchise) movies */}
+        {faded ? (
+          <div className="space-y-1.5">
+            {/* Adopt/Remove toggle */}
+            <button
+              onClick={handleAdopt}
+              className={`w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                adopted
+                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                  : 'bg-gray-50 hover:bg-blue-50 text-gray-400 border border-dashed border-gray-300 hover:border-blue-300 hover:text-blue-500'
+              } ${justToggled ? 'scale-95' : ''}`}
+            >
+              {adopted ? (
+                <>
+                  <MinusCircle size={14} />
+                  Remove from List
+                </>
+              ) : (
+                <>
+                  <PlusCircle size={14} />
+                  Add to List
+                </>
+              )}
+            </button>
+            {/* Watch toggle — only visible when adopted */}
+            {adopted && (
+              <button
+                onClick={handleToggle}
+                className={`w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                  watched
+                    ? 'bg-green-500 hover:bg-green-600 text-white'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                } ${justToggled ? 'scale-95' : ''}`}
+              >
+                {watched ? (
+                  <>
+                    <CheckCircle size={14} />
+                    Watched
+                  </>
+                ) : (
+                  <>
+                    <Circle size={14} />
+                    Mark Watched
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        ) : (
+          /* Standard watch button for curated movies */
+          <button
+            onClick={handleToggle}
+            className={`w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
+              watched
+                ? 'bg-green-500 hover:bg-green-600 text-white'
                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-          } ${justToggled ? 'scale-95' : ''}`}
-        >
-          {watched ? (
-            <>
-              <CheckCircle size={14} />
-              Watched
-            </>
-          ) : dimmed ? (
-            <>
-              <Circle size={14} />
-              Add to List
-            </>
-          ) : (
-            <>
-              <Circle size={14} />
-              Mark Watched
-            </>
-          )}
-        </button>
+            } ${justToggled ? 'scale-95' : ''}`}
+          >
+            {watched ? (
+              <>
+                <CheckCircle size={14} />
+                Watched
+              </>
+            ) : (
+              <>
+                <Circle size={14} />
+                Mark Watched
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );
