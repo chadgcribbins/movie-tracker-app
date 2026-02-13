@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Search, X, Plus, Check, Star, Clock, ChevronDown } from 'lucide-react';
+import { Search, X, Plus, Check, Star, ChevronDown } from 'lucide-react';
 
-const TMDB_API_KEY = 'f91342dc5f8b97bee37afdef21f1e147';
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY || '';
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w92';
 
 export default function DirectorChair({ existingTmdbIds, onMovieSubmitted }) {
