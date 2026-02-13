@@ -76,8 +76,14 @@ export default function StudioView({ movies, isWatched, onToggle, onTrailer }) {
     setCollapsed(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const totalStudios = studioSections.length + (unclassified.length > 0 ? 1 : 0);
+
   return (
     <div className="space-y-3">
+      <h2 className="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+        <span>Studios</span>
+        <span className="text-sm font-normal text-gray-400">({totalStudios})</span>
+      </h2>
       {studioSections.map(({ key, label, emoji, movies: studioMovies, watchedCount }) => {
         const isCollapsed = collapsed[key];
 

@@ -60,6 +60,10 @@ export default function GenreView({ movies, isWatched, onToggle, onTrailer }) {
 
   return (
     <div className="space-y-3">
+      <h2 className="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+        <span>Genres</span>
+        <span className="text-sm font-normal text-gray-400">({genreGroups.length})</span>
+      </h2>
       {genreGroups.map(({ genre, emoji, movies: genreMovies, watchedCount }) => {
         const isCollapsed = collapsed[genre];
 
