@@ -109,17 +109,11 @@ export default function DirectorChair({ existingTmdbIds, onMovieSubmitted }) {
 
   return (
     <>
-      {/* Director's Chair peek - clip wrapper stays in viewport so taps work on mobile */}
+      {/* Director's Chair peek - clip wrapper keeps tap target in viewport */}
       <div
-        className={`fixed bottom-0 z-40 overflow-hidden transition-opacity duration-500 ${
+        className={`director-chair-wrapper fixed right-4 sm:right-[16.66%] z-40 overflow-hidden transition-opacity duration-500 ${
           isOpen ? 'opacity-0 pointer-events-none' : ''
         }`}
-        style={{
-          right: '16.66%',
-          height: '36px',
-          transform: 'rotate(-3deg)',
-          transformOrigin: 'bottom center',
-        }}
       >
         <button
           onClick={toggle}
@@ -127,11 +121,11 @@ export default function DirectorChair({ existingTmdbIds, onMovieSubmitted }) {
           title="Submit a movie"
           style={{ marginTop: '-44px' }}
         >
-          {/* Chair back — tall, bottom half hidden by clip wrapper */}
-          <div className="relative w-36 h-20 bg-gradient-to-b from-gray-800 via-gray-900 to-gray-900 rounded-t-lg border-2 border-b-0 border-gray-600 shadow-lg overflow-hidden active:-translate-y-2 group-hover:-translate-y-3 transition-transform duration-200">
+          {/* Chair back — tall, bottom clipped by wrapper overflow:hidden */}
+          <div className="relative w-28 sm:w-36 h-20 bg-gradient-to-b from-gray-800 via-gray-900 to-gray-900 rounded-t-lg border-2 border-b-0 border-gray-600 shadow-lg overflow-hidden active:-translate-y-2 group-hover:-translate-y-3 transition-transform duration-200">
             {/* Canvas text on chair back */}
-            <div className="absolute inset-x-0 top-2 h-10 mx-2.5 bg-emerald-800 rounded-t-sm flex items-center justify-center">
-              <span className="text-[11px] font-bold text-amber-300 tracking-widest uppercase">Director</span>
+            <div className="absolute inset-x-0 top-2 h-10 mx-2 sm:mx-2.5 bg-emerald-800 rounded-t-sm flex items-center justify-center">
+              <span className="text-[10px] sm:text-[11px] font-bold text-amber-300 tracking-widest uppercase">Director</span>
             </div>
             {/* Chair posts */}
             <div className="absolute bottom-2 left-2 w-2 h-3 bg-gray-700 rounded-b-sm" />
