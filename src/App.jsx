@@ -18,7 +18,7 @@ export default function App() {
   const collections = movieData.collections;
   const collectionMovies = movieData.collectionMovies || {};
 
-  const { watched, watchedCount, toggleWatched, isWatched, setWatchedFromImport } = useWatchedState();
+  const { watched, adopted, watchedCount, toggleWatched, toggleAdopted, isWatched, isAdopted, setWatchedFromImport } = useWatchedState();
 
   const {
     search, setSearch,
@@ -87,7 +87,9 @@ export default function App() {
                 collections={collections}
                 collectionMovies={collectionMovies}
                 isWatched={isWatched}
+                isAdopted={isAdopted}
                 onToggle={toggleWatched}
+                onAdopt={toggleAdopted}
               />
             )
           ) : (

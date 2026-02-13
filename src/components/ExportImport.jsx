@@ -29,8 +29,8 @@ export default function ExportImport({ movies, onImport }) {
     if (!file) return;
 
     try {
-      const newWatched = await importWatchedState(file);
-      onImport(newWatched);
+      const { watched: newWatched, adopted: newAdopted } = await importWatchedState(file);
+      onImport(newWatched, newAdopted);
     } catch (err) {
       alert(`Import failed: ${err.message}`);
     }

@@ -7,7 +7,9 @@ export default function FranchiseView({
   collections,
   collectionMovies,
   isWatched,
+  isAdopted,
   onToggle,
+  onAdopt,
 }) {
   const { franchises, standalone } = useMemo(() => {
     const franchiseMap = new Map();
@@ -53,7 +55,9 @@ export default function FranchiseView({
               curatedMovies={curatedMovies}
               collectionMovies={collectionMovies || {}}
               isWatched={isWatched}
+              isAdopted={isAdopted}
               onToggle={onToggle}
+              onAdopt={onAdopt}
             />
           ))}
         </div>

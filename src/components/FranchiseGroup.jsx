@@ -6,7 +6,9 @@ export default function FranchiseGroup({
   curatedMovies,
   collectionMovies,
   isWatched,
+  isAdopted,
   onToggle,
+  onAdopt,
 }) {
   // Build the full ordered list of movies in this franchise
   const allMovieIds = collection.movieTmdbIds;
@@ -27,17 +29,19 @@ export default function FranchiseGroup({
     return null;
   }).filter(Boolean);
 
-  const totalCount = orderedMovies.length;
+  // Count watched: curated movies + adopted non-curated that are watched
   const watchedCount = orderedMovies.filter(m => isWatched(m.movie.tmdbId)).length;
+  // Count "in list": curated + adopted
+  const inListCount = orderedMovies.filter(m => !m.faded || isAdopted(m.movie.tmdbId)).length;
 
   return (
     <div className="mb-8">
       <div className="flex items-center gap-3 mb-3">
         <h3 className="text-lg font-bold text-gray-800">{collection.name}</h3>
         <span className="text-sm text-gray-500">
-          {watchedCount}/{totalCount} watched
+          {watchedCount}/{inListCount} watched
         </span>
-        {watchedCount === totalCount && totalCount > 0 && (
+        {watchedCount === inListCount && inListCount > 0 && (
           <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
             Complete!
           </span>
@@ -49,7 +53,9 @@ export default function FranchiseGroup({
             key={movie.tmdbId}
             movie={movie}
             isWatched={isWatched(movie.tmdbId)}
+            isAdopted={isAdopted(movie.tmdbId)}
             onToggle={onToggle}
+            onAdopt={onAdopt}
             faded={faded}
           />
         ))}

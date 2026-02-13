@@ -1,15 +1,18 @@
-import { loadWatched, saveWatched } from './storage';
+import { loadWatched, saveWatched, loadAdopted, saveAdopted } from './storage';
 
 /**
- * Export watched state as a downloadable JSON file.
+ * Export watched + adopted state as a downloadable JSON file.
  */
 export function exportWatchedState(movies) {
   const watched = loadWatched();
+  const adopted = loadAdopted();
   const exportData = {
-    version: 1,
+    version: 2,
     exported: new Date().toISOString(),
     watchedTmdbIds: Array.from(watched),
+    adoptedTmdbIds: Array.from(adopted),
     watchedCount: watched.size,
+    adoptedCount: adopted.size,
     movieManifest: movies
       .filter(m => watched.has(m.tmdbId))
       .map(m => ({ tmdbId: m.tmdbId, title: m.title, year: m.year })),
@@ -27,7 +30,8 @@ export function exportWatchedState(movies) {
 }
 
 /**
- * Import watched state from a JSON file. Returns the new Set of watched IDs.
+ * Import watched + adopted state from a JSON file.
+ * Returns { watched: Set, adopted: Set }.
  */
 export function importWatchedState(file) {
   return new Promise((resolve, reject) => {
@@ -42,13 +46,22 @@ export function importWatchedState(file) {
         }
 
         // Merge with existing watched state
-        const current = loadWatched();
+        const currentWatched = loadWatched();
         for (const id of data.watchedTmdbIds) {
-          current.add(id);
+          currentWatched.add(id);
+        }
+        saveWatched(currentWatched);
+
+        // Merge adopted state (v2+ files)
+        const currentAdopted = loadAdopted();
+        if (data.adoptedTmdbIds && Array.isArray(data.adoptedTmdbIds)) {
+          for (const id of data.adoptedTmdbIds) {
+            currentAdopted.add(id);
+          }
+          saveAdopted(currentAdopted);
         }
 
-        saveWatched(current);
-        resolve(current);
+        resolve({ watched: currentWatched, adopted: currentAdopted });
       } catch (err) {
         reject(new Error('Failed to parse import file'));
       }
