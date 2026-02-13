@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import movieData from './data/movies.json';
 import { useWatchedState } from './hooks/useWatchedState';
 import { useMovieFilters } from './hooks/useMovieFilters';
+import { loadSubmitted, saveSubmitted } from './utils/storage';
 import CurtainReveal from './components/CurtainReveal';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
@@ -14,11 +15,29 @@ import StudioView from './components/StudioView';
 import FranchiseView from './components/FranchiseView';
 import EmptyState from './components/EmptyState';
 import TrailerModal from './components/TrailerModal';
+import DirectorChair from './components/DirectorChair';
 
 export default function App() {
-  const movies = movieData.movies;
+  const [submittedMovies, setSubmittedMovies] = useState(() => loadSubmitted());
+  const movies = useMemo(() => {
+    const bundled = movieData.movies;
+    const bundledIds = new Set(bundled.map(m => m.tmdbId));
+    const extras = submittedMovies.filter(m => !bundledIds.has(m.tmdbId));
+    return [...bundled, ...extras];
+  }, [submittedMovies]);
   const collections = movieData.collections;
   const collectionMovies = movieData.collectionMovies || {};
+
+  const existingTmdbIds = useMemo(() => new Set(movies.map(m => m.tmdbId)), [movies]);
+
+  const handleMovieSubmitted = useCallback((newMovie) => {
+    setSubmittedMovies(prev => {
+      if (prev.some(m => m.tmdbId === newMovie.tmdbId)) return prev;
+      const updated = [...prev, newMovie];
+      saveSubmitted(updated);
+      return updated;
+    });
+  }, []);
 
   const { watched, adopted, watchedCount, toggleWatched, toggleAdopted, isWatched, isAdopted, setWatchedFromImport } = useWatchedState();
 
@@ -123,6 +142,12 @@ export default function App() {
       {trailerMovie && (
         <TrailerModal movie={trailerMovie} onClose={closeTrailer} />
       )}
+
+      {/* Director's Chair — submit a movie */}
+      <DirectorChair
+        existingTmdbIds={existingTmdbIds}
+        onMovieSubmitted={handleMovieSubmitted}
+      />
     </CurtainReveal>
   );
 }

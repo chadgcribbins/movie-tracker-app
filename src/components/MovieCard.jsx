@@ -38,7 +38,7 @@ export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdo
         ${ghosted ? 'scale-[0.97] hover:scale-100' : 'hover:shadow-xl hover:-translate-y-1'}
         ${watched ? 'ring-2 ring-green-400' : ''}
         ${!watched && !ghosted ? 'card-unwatched' : ''}
-        ${faded && adopted ? 'ring-2 ring-blue-400 ring-dashed' : ''}
+        ${faded && adopted ? 'border-2 border-dashed border-blue-400' : ''}
       `}
     >
       {/* Poster — clickable for trailer */}

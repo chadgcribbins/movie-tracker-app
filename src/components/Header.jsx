@@ -14,7 +14,7 @@ export default function Header({ watchedCount, totalCount, onCurtainClose }) {
           <button
             onClick={onCurtainClose}
             className="p-2 text-red-700 hover:bg-red-50 rounded-lg transition-colors"
-            title="Replay curtain animation"
+            title="Close curtains"
           >
             <Clapperboard size={24} />
           </button>

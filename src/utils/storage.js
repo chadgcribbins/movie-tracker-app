@@ -62,3 +62,31 @@ export function clearWatched() {
   localStorage.removeItem(ADOPTED_KEY);
   localStorage.removeItem(LEGACY_KEY);
 }
+
+// --- User-submitted movies ---
+
+const SUBMITTED_KEY = 'movieTracker_submitted';
+
+/**
+ * Load user-submitted movies from localStorage.
+ * Returns an array of movie objects.
+ */
+export function loadSubmitted() {
+  const raw = localStorage.getItem(SUBMITTED_KEY);
+  if (raw) {
+    try {
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
+/**
+ * Save user-submitted movies to localStorage.
+ */
+export function saveSubmitted(moviesArray) {
+  localStorage.setItem(SUBMITTED_KEY, JSON.stringify(moviesArray));
+}
