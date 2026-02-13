@@ -10,6 +10,7 @@ export default function FranchiseView({
   isAdopted,
   onToggle,
   onAdopt,
+  onTrailer,
 }) {
   const { franchises, standalone } = useMemo(() => {
     const franchiseMap = new Map();
@@ -58,6 +59,7 @@ export default function FranchiseView({
               isAdopted={isAdopted}
               onToggle={onToggle}
               onAdopt={onAdopt}
+              onTrailer={onTrailer}
             />
           ))}
         </div>
@@ -77,6 +79,7 @@ export default function FranchiseView({
                 movie={movie}
                 isWatched={isWatched(movie.tmdbId)}
                 onToggle={onToggle}
+                onTrailer={onTrailer}
               />
             ))}
           </div>

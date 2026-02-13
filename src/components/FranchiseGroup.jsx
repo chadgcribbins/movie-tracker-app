@@ -9,6 +9,7 @@ export default function FranchiseGroup({
   isAdopted,
   onToggle,
   onAdopt,
+  onTrailer,
 }) {
   // Build the full ordered list of movies in this franchise
   const allMovieIds = collection.movieTmdbIds;
@@ -56,6 +57,7 @@ export default function FranchiseGroup({
             isAdopted={isAdopted(movie.tmdbId)}
             onToggle={onToggle}
             onAdopt={onAdopt}
+            onTrailer={onTrailer}
             faded={faded}
           />
         ))}

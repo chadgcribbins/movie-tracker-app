@@ -4,6 +4,7 @@ import { LayoutGrid, Film } from 'lucide-react';
 const views = [
   { key: 'grid', label: 'Grid', icon: LayoutGrid },
   { key: 'genre', label: 'Genres', icon: null, emoji: '🎭' },
+  { key: 'studio', label: 'Studios', icon: null, emoji: '🏢' },
   { key: 'franchise', label: 'Franchises', icon: Film },
 ];
 

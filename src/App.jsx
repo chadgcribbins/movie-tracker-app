@@ -10,8 +10,10 @@ import ViewToggle from './components/ViewToggle';
 import ExportImport from './components/ExportImport';
 import MovieGrid from './components/MovieGrid';
 import GenreView from './components/GenreView';
+import StudioView from './components/StudioView';
 import FranchiseView from './components/FranchiseView';
 import EmptyState from './components/EmptyState';
+import TrailerModal from './components/TrailerModal';
 
 export default function App() {
   const movies = movieData.movies;
@@ -29,9 +31,18 @@ export default function App() {
   } = useMovieFilters(movies, isWatched);
 
   const [curtainCloseFn, setCurtainCloseFn] = useState(null);
+  const [trailerMovie, setTrailerMovie] = useState(null);
 
   const handleCurtainToggle = useCallback((closeFn) => {
     setCurtainCloseFn(() => closeFn);
+  }, []);
+
+  const handleTrailer = useCallback((movie) => {
+    setTrailerMovie(movie);
+  }, []);
+
+  const closeTrailer = useCallback(() => {
+    setTrailerMovie(null);
   }, []);
 
   const counts = useMemo(() => ({
@@ -74,12 +85,21 @@ export default function App() {
                 movies={filteredMovies}
                 isWatched={isWatched}
                 onToggle={toggleWatched}
+                onTrailer={handleTrailer}
               />
             ) : viewMode === 'genre' ? (
               <GenreView
                 movies={filteredMovies}
                 isWatched={isWatched}
                 onToggle={toggleWatched}
+                onTrailer={handleTrailer}
+              />
+            ) : viewMode === 'studio' ? (
+              <StudioView
+                movies={filteredMovies}
+                isWatched={isWatched}
+                onToggle={toggleWatched}
+                onTrailer={handleTrailer}
               />
             ) : (
               <FranchiseView
@@ -90,6 +110,7 @@ export default function App() {
                 isAdopted={isAdopted}
                 onToggle={toggleWatched}
                 onAdopt={toggleAdopted}
+                onTrailer={handleTrailer}
               />
             )
           ) : (
@@ -97,6 +118,11 @@ export default function App() {
           )}
         </div>
       </div>
+
+      {/* Trailer modal */}
+      {trailerMovie && (
+        <TrailerModal movie={trailerMovie} onClose={closeTrailer} />
+      )}
     </CurtainReveal>
   );
 }

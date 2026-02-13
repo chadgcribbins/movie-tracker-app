@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { CheckCircle, Circle, Clock, Star, PlusCircle, MinusCircle } from 'lucide-react';
+import { CheckCircle, Circle, Clock, Star, PlusCircle, MinusCircle, Play } from 'lucide-react';
 
 const POSTER_BASE = 'https://image.tmdb.org/t/p/w342';
 
-export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdopt, faded = false }) {
+export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdopt, onTrailer, faded = false }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [justToggled, setJustToggled] = useState(false);
@@ -16,27 +16,36 @@ export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdo
 
   const handleAdopt = useCallback(() => {
     setJustToggled(true);
-    onAdopt(movie.tmdbId);
+    if (onAdopt) onAdopt(movie.tmdbId);
     setTimeout(() => setJustToggled(false), 400);
   }, [movie.tmdbId, onAdopt]);
+
+  const handlePosterClick = useCallback(() => {
+    if (movie.trailerKey && onTrailer) {
+      onTrailer(movie);
+    }
+  }, [movie, onTrailer]);
 
   const watched = isWatched;
   const adopted = isAdopted;
   // Ghosted = faded franchise movie that hasn't been adopted
   const ghosted = faded && !adopted;
+  const hasTrailer = !!movie.trailerKey;
 
   return (
     <div
       className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300
-        ${ghosted ? 'opacity-40 scale-[0.97] hover:opacity-70 hover:scale-100' : 'hover:shadow-xl hover:-translate-y-1'}
+        ${ghosted ? 'scale-[0.97] hover:scale-100' : 'hover:shadow-xl hover:-translate-y-1'}
         ${watched ? 'ring-2 ring-green-400' : ''}
         ${!watched && !ghosted ? 'card-unwatched' : ''}
         ${faded && adopted ? 'ring-2 ring-blue-400 ring-dashed' : ''}
-        cursor-pointer
       `}
     >
-      {/* Poster */}
-      <div className="relative aspect-[2/3] bg-gray-200 overflow-hidden">
+      {/* Poster — clickable for trailer */}
+      <div
+        className={`relative aspect-[2/3] bg-gray-200 overflow-hidden group ${hasTrailer ? 'cursor-pointer' : ''} ${ghosted ? 'opacity-40 hover:opacity-70 transition-opacity' : ''}`}
+        onClick={handlePosterClick}
+      >
         {movie.posterPath && !imgError ? (
           <img
             src={`${POSTER_BASE}${movie.posterPath}`}
@@ -52,6 +61,15 @@ export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdo
           <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gray-100 p-4">
             <div className="text-4xl mb-2">🎬</div>
             <p className="text-sm font-medium text-center">{movie.title}</p>
+          </div>
+        )}
+
+        {/* Play button overlay on hover */}
+        {hasTrailer && !ghosted && (
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/30">
+            <div className="bg-red-600 rounded-full p-3 shadow-lg transform group-hover:scale-110 transition-transform">
+              <Play size={24} className="text-white ml-0.5" fill="white" />
+            </div>
           </div>
         )}
 
@@ -88,10 +106,10 @@ export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdo
 
       {/* Content */}
       <div className="p-3">
-        <h3 className="font-bold text-sm mb-1 text-gray-800 line-clamp-2 leading-tight">
+        <h3 className={`font-bold text-sm mb-1 text-gray-800 line-clamp-2 leading-tight ${ghosted ? 'opacity-40' : ''}`}>
           {movie.title}
         </h3>
-        <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+        <div className={`flex items-center gap-2 text-xs text-gray-500 mb-2 ${ghosted ? 'opacity-40' : ''}`}>
           <span>{movie.year}</span>
           {movie.runtime && (
             <>
@@ -127,28 +145,26 @@ export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdo
         {/* Buttons for faded (non-curated franchise) movies */}
         {faded ? (
           <div className="space-y-1.5">
-            {/* Adopt/Remove toggle */}
             <button
               onClick={handleAdopt}
-              className={`w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
+              className={`relative z-10 w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${
                 adopted
                   ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                  : 'bg-gray-50 hover:bg-blue-50 text-gray-400 border border-dashed border-gray-300 hover:border-blue-300 hover:text-blue-500'
+                  : 'bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-300'
               } ${justToggled ? 'scale-95' : ''}`}
             >
               {adopted ? (
                 <>
                   <MinusCircle size={14} />
-                  Remove from List
+                  Hide
                 </>
               ) : (
                 <>
                   <PlusCircle size={14} />
-                  Add to List
+                  Unhide
                 </>
               )}
             </button>
-            {/* Watch toggle — only visible when adopted */}
             {adopted && (
               <button
                 onClick={handleToggle}
@@ -173,7 +189,6 @@ export default function MovieCard({ movie, isWatched, isAdopted, onToggle, onAdo
             )}
           </div>
         ) : (
-          /* Standard watch button for curated movies */
           <button
             onClick={handleToggle}
             className={`w-full py-1.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-1.5 ${

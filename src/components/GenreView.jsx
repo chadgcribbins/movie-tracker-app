@@ -28,7 +28,7 @@ function getEmoji(genre) {
   return genreEmojis[genre] || '🎬';
 }
 
-export default function GenreView({ movies, isWatched, onToggle }) {
+export default function GenreView({ movies, isWatched, onToggle, onTrailer }) {
   const [collapsed, setCollapsed] = useState({});
 
   const genreGroups = useMemo(() => {
@@ -93,6 +93,7 @@ export default function GenreView({ movies, isWatched, onToggle }) {
                       movie={movie}
                       isWatched={isWatched(movie.tmdbId)}
                       onToggle={onToggle}
+                      onTrailer={onTrailer}
                     />
                   ))}
                 </div>
