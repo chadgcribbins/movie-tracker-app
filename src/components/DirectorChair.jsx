@@ -109,24 +109,26 @@ export default function DirectorChair({ existingTmdbIds, onMovieSubmitted }) {
 
   return (
     <>
-      {/* Director's Chair peek - fixed at bottom right area, slightly skewed */}
+      {/* Director's Chair peek - clip wrapper stays in viewport so taps work on mobile */}
       <div
-        className={`fixed z-40 transition-all duration-500 ease-out ${
+        className={`fixed bottom-0 z-40 overflow-hidden transition-opacity duration-500 ${
           isOpen ? 'opacity-0 pointer-events-none' : ''
         }`}
         style={{
           right: '16.66%',
-          bottom: '-30px',
-          transform: isOpen ? 'translateY(100%) rotate(-3deg)' : 'rotate(-3deg)',
+          height: '36px',
+          transform: 'rotate(-3deg)',
+          transformOrigin: 'bottom center',
         }}
       >
         <button
           onClick={toggle}
           className="group relative flex flex-col items-center"
           title="Submit a movie"
+          style={{ marginTop: '-44px' }}
         >
-          {/* Chair back — wide, tall enough that bottom stays offscreen even on hover */}
-          <div className="relative w-36 h-20 bg-gradient-to-b from-gray-800 via-gray-900 to-gray-900 rounded-t-lg border-2 border-b-0 border-gray-600 shadow-lg overflow-hidden group-hover:-translate-y-3 transition-transform duration-200">
+          {/* Chair back — tall, bottom half hidden by clip wrapper */}
+          <div className="relative w-36 h-20 bg-gradient-to-b from-gray-800 via-gray-900 to-gray-900 rounded-t-lg border-2 border-b-0 border-gray-600 shadow-lg overflow-hidden active:-translate-y-2 group-hover:-translate-y-3 transition-transform duration-200">
             {/* Canvas text on chair back */}
             <div className="absolute inset-x-0 top-2 h-10 mx-2.5 bg-emerald-800 rounded-t-sm flex items-center justify-center">
               <span className="text-[11px] font-bold text-amber-300 tracking-widest uppercase">Director</span>
@@ -134,10 +136,6 @@ export default function DirectorChair({ existingTmdbIds, onMovieSubmitted }) {
             {/* Chair posts */}
             <div className="absolute bottom-2 left-2 w-2 h-3 bg-gray-700 rounded-b-sm" />
             <div className="absolute bottom-2 right-2 w-2 h-3 bg-gray-700 rounded-b-sm" />
-          </div>
-          {/* Subtle upward arrow hint */}
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <ChevronDown size={18} className="text-gray-400 rotate-180" />
           </div>
         </button>
       </div>

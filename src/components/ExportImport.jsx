@@ -43,9 +43,11 @@ export default function ExportImport({ movies, onImport }) {
     <div className="relative ml-auto" ref={menuRef}>
       <button
         onClick={() => setOpen(prev => !prev)}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        title="Migrate"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
       >
-        Migrate
+        <Download size={14} className="sm:hidden" />
+        <span className="hidden sm:inline">Migrate</span>
         <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 

@@ -17,7 +17,8 @@ export default function ViewToggle({ viewMode, onChange }) {
           <button
             key={v.key}
             onClick={() => onChange(v.key)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
+            title={v.label}
+            className={`flex items-center justify-center gap-1.5 px-2.5 py-1.5 sm:px-3 text-sm font-medium transition-colors ${
               i > 0 ? 'border-l border-gray-300' : ''
             } ${
               viewMode === v.key
@@ -26,7 +27,7 @@ export default function ViewToggle({ viewMode, onChange }) {
             }`}
           >
             {Icon ? <Icon size={14} /> : <span className="text-sm">{v.emoji}</span>}
-            {v.label}
+            <span className="hidden sm:inline">{v.label}</span>
           </button>
         );
       })}
