@@ -1,10 +1,11 @@
 import React from 'react';
-import { LayoutGrid, Film } from 'lucide-react';
+import { LayoutGrid, Film, Shield } from 'lucide-react';
 
 const views = [
   { key: 'grid', label: 'Grid', icon: LayoutGrid },
   { key: 'genre', label: 'Genres', icon: null, emoji: '🎭' },
   { key: 'studio', label: 'Studios', icon: null, emoji: '🏢' },
+  { key: 'rating', label: 'Ratings', icon: Shield },
   { key: 'franchise', label: 'Franchises', icon: Film },
 ];
 

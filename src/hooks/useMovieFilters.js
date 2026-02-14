@@ -5,7 +5,7 @@ export function useMovieFilters(movies, isWatched) {
   const [filter, setFilter] = useState('all'); // 'all' | 'watched' | 'unwatched'
   const [sortKey, setSortKey] = useState('consensus'); // 'title' | 'year' | 'consensus' | 'rating'
   const [sortDir, setSortDir] = useState('desc'); // 'asc' | 'desc'
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'genre' | 'studio' | 'franchise'
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'genre' | 'studio' | 'rating' | 'franchise'
 
   const toggleSort = (key) => {
     if (key === sortKey) {

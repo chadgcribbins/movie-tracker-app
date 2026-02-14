@@ -13,6 +13,7 @@ import MovieGrid from './components/MovieGrid';
 import GenreView from './components/GenreView';
 import StudioView from './components/StudioView';
 import FranchiseView from './components/FranchiseView';
+import RatingView from './components/RatingView';
 import EmptyState from './components/EmptyState';
 import TrailerModal from './components/TrailerModal';
 import DirectorChair from './components/DirectorChair';
@@ -115,6 +116,13 @@ export default function App() {
               />
             ) : viewMode === 'studio' ? (
               <StudioView
+                movies={filteredMovies}
+                isWatched={isWatched}
+                onToggle={toggleWatched}
+                onTrailer={handleTrailer}
+              />
+            ) : viewMode === 'rating' ? (
+              <RatingView
                 movies={filteredMovies}
                 isWatched={isWatched}
                 onToggle={toggleWatched}
