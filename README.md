@@ -1,78 +1,94 @@
-# 🎬 Kids Movie Tracker
+# Kids Movie Tracker
 
-A React app to track your progress through the top 100 kids movies. Mark movies as watched, search through titles, and automatically load movie posters.
+A React app to track your family's progress through 399 curated kids and family movies. Aggregated from 6 "best of" lists, enriched with TMDB data, and deployed on Vercel.
 
 ## Features
 
-- ✅ Track which movies you've watched (100 total)
-- 🎨 Automatically loads movie posters using AI
-- 🔍 Search and filter by watched/unwatched status
-- 💾 Saves your progress in browser localStorage
-- 📱 Responsive design for mobile and desktop
+- **399 movies** curated from Fatherly, Rotten Tomatoes, Common Sense Media, Empire, Time Out, and manual picks
+- **5 view modes** — Grid, Genre, Studio, Rating (US/UK), and Franchise
+- **Theater curtain** reveal animation on load
+- **YouTube trailers** — click any poster to watch the trailer
+- **Director's Chair** — submit new movies via TMDB search (bottom-right button)
+- **Franchise grouping** — 162 collections with ghosted sequel movies you can adopt
+- **Studio grouping** — 30 studio categories powered by TMDB production company data
+- **Rating grouping** — US MPAA (G, PG, PG-13, R) with UK equivalents (U, PG, 12A, 15)
+- **Search & filter** — by title, genre, year, watched/unwatched status
+- **Sort** — by consensus score, title, year, or TMDB rating
+- **Export/Import** — save and restore watched state as JSON
+- **Responsive** — works on mobile and desktop
 
-## Setup
+## Quick Start
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+npm run dev
+```
 
-2. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
+Open http://localhost:5173
 
-3. **Open in browser:**
-   - The app will be running at `http://localhost:5173`
-
-## Building for Production
+## Production Build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## How It Works
+## Data Pipeline
 
-- The app loads all 100 movies from the curated list
-- Posters are fetched automatically in batches using Claude AI
-- Your watched status is saved to localStorage
-- Filter between all movies, watched, or unwatched
-- Search for specific titles
+The movie data is pre-built and committed as `src/data/movies.json` — the app works immediately after clone with no API key needed.
+
+To regenerate the data (requires a [TMDB API key](https://www.themoviedb.org/settings/api)):
+
+```bash
+# Add your key to .env.local
+echo "TMDB_API_KEY=your_key_here" > .env.local
+echo "VITE_TMDB_API_KEY=your_key_here" >> .env.local
+
+# Regenerate master list from source JSONs
+npm run build-list
+
+# Enrich with TMDB data (posters, trailers, certifications, collections)
+npm run enrich
+```
 
 ## Tech Stack
 
-- React 18
-- Vite (build tool)
-- Tailwind CSS (styling)
-- Lucide React (icons)
-- Anthropic Claude API (poster fetching)
+- **React 18** — hooks-only, no state management library
+- **Vite 4** — build tool
+- **Tailwind CSS 3** — styling
+- **lucide-react** — icons
+- **TMDB API** — movie data, posters, trailers
 
-## Development
-
-The main component is in `src/App.jsx`. The movie data is embedded directly in the component, but you could easily move it to a separate JSON file or fetch it from an API.
-
-### Project Structure
+## Project Structure
 
 ```
-movie-tracker-app/
-├── src/
-│   ├── App.jsx          # Main component with movie tracker logic
-│   ├── main.jsx         # React app initialization
-│   └── index.css        # Global styles with Tailwind
-├── index.html           # HTML entry point
-├── package.json         # Dependencies and scripts
-├── vite.config.js       # Vite configuration
-├── tailwind.config.js   # Tailwind CSS configuration
-└── postcss.config.js    # PostCSS configuration
+src/
+  App.jsx                     # Main orchestrator
+  data/movies.json            # 399 movies + 162 collections (committed)
+  components/
+    CurtainReveal.jsx         # Theater curtain animation
+    Header.jsx                # Title, progress bar, curtain toggle
+    MovieCard.jsx             # Movie poster card with watched toggle
+    MovieGrid.jsx             # Grid view
+    GenreView.jsx             # Group by genre
+    StudioView.jsx            # Group by production studio
+    RatingView.jsx            # Group by US/UK certification
+    FranchiseView.jsx         # Group by collection
+    FranchiseGroup.jsx        # Single franchise with adopt/watch
+    DirectorChair.jsx         # Submit-a-movie TMDB search panel
+    TrailerModal.jsx          # YouTube embed modal
+    SearchBar / FilterBar / ViewToggle / ExportImport / ...
+  hooks/
+    useWatchedState.js        # Watched + adopted state with localStorage
+    useMovieFilters.js        # Search, filter, sort, view mode
+  utils/
+    storage.js                # localStorage helpers
+    exportImport.js           # JSON export/import (v2 with adopted state)
+scripts/
+  master-list.js              # Aggregate 6 source lists
+  enrich-tmdb.js              # TMDB enrichment pipeline
 ```
 
-## Customization
+## Deploy
 
-You can customize:
-- Movie list in `src/App.jsx` (movieData array)
-- Colors and styling in Tailwind classes
-- Poster fetching logic (currently uses Claude API)
-- localStorage key for saved data
-
-Enjoy tracking your movie watching progress! 🍿
+Auto-deploys to Vercel on push to `main`.
